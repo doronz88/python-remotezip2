@@ -1,12 +1,12 @@
-import unittest
-import zipfile
-import tempfile
+import io
 import os
 import shutil
-import io
+import tempfile
+import unittest
+import zipfile
 
-from requests import session
 import requests_mock
+from requests import session
 
 import remotezip2 as rz
 

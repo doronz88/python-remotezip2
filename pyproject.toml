@@ -35,11 +35,18 @@ test = ["requests_mock"]
 [project.scripts]
 python-remotezip2 = "remotezip2:main"
 
+[tool.setuptools]
+py-modules = ["remotezip2"]
+
 [tool.setuptools.packages.find]
 exclude = ["docs*", "tests*"]
 
 [tool.setuptools.dynamic]
 dependencies = { file = ["requirements.txt"] }
+
+[tool.setuptools_scm]
+write_to = "_version.py"
+write_to_template = "__version__ = '{version}'"
 
 [build-system]
 requires = ["setuptools>=43.0.0", "setuptools_scm>=8", "wheel"]

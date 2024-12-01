@@ -31,6 +31,7 @@ class PartialBuffer:
         however, any attempt to read data outside the partial data is going to fail
         with OutOfBound error.
     """
+
     def __init__(self, buffer, offset, size, stream):
         self.buffer = buffer if stream else io.BytesIO(buffer.read())
         self._offset = offset
@@ -97,7 +98,8 @@ class PartialBuffer:
 class RemoteIO(io.IOBase):
     """Exposes a file-like interface for zip files hosted remotely. It requires the remote server to
     support the Range header."""
-    def __init__(self, fetch_fun, initial_buffer_size=64*1024):
+
+    def __init__(self, fetch_fun, initial_buffer_size=64 * 1024):
         self._fetch_fun = fetch_fun
         self._initial_buffer_size = initial_buffer_size
         self.buffer = None
@@ -151,7 +153,7 @@ class RemoteIO(io.IOBase):
             return pos
         except OutOfBound:
             self._seek_succeeded = False
-            return self.tell()   # we ignore the issue here, we will check if buffer is fine during read
+            return self.tell()  # we ignore the issue here, we will check if buffer is fine during read
 
     def tell(self):
         return self.buffer.tell()
@@ -164,6 +166,7 @@ class RemoteIO(io.IOBase):
 
 class RemoteFetcher:
     """Represent a remote file to be fetched in parts"""
+
     def __init__(self, url, session=None, support_suffix_range=True, **kwargs):
         self._kwargs = kwargs
         self._url = url
@@ -242,7 +245,8 @@ def pairwise(iterable):
 
 
 class RemoteZip(zipfile.ZipFile):
-    def __init__(self, url, initial_buffer_size=64*1024, session=None, fetcher=RemoteFetcher, support_suffix_range=True,
+    def __init__(self, url, initial_buffer_size=64 * 1024, session=None, fetcher=RemoteFetcher,
+                 support_suffix_range=True,
                  **kwargs):
         fetcher = fetcher(url, session, support_suffix_range=support_suffix_range, **kwargs)
         rio = RemoteIO(fetcher.fetch, initial_buffer_size)
@@ -297,7 +301,8 @@ def main():
     parser.add_argument('filename', nargs='*', help='File to extract')
     parser.add_argument('-l', '--list', action='store_true', help='List files in the archive')
     parser.add_argument('-d', '--dir', default=os.getcwd(), help='Extract directory, default current directory')
-    parser.add_argument('--disable-suffix-range-support', action='store_true', help='Use when remote server does not support suffix range (negative offset)')
+    parser.add_argument('--disable-suffix-range-support', action='store_true',
+                        help='Use when remote server does not support suffix range (negative offset)')
 
     args = parser.parse_args()
     support_suffix_range = not args.disable_suffix_range_support
